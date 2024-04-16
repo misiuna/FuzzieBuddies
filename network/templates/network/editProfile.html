@@ -1,0 +1,11 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h1>Edit Your Profile</h1>
+    <form action="{% url 'editProfile' user %}" method='post'>
+        {% csrf_token %}
+        {{form}}
+        <input  type="submit" class="btn btn-primary">
+    </form>
+{% endblock %}

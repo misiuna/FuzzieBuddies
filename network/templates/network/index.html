@@ -1,0 +1,94 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+
+<!-- Form to write a post -->
+{% if user.is_authenticated %}
+    <div style="margin-top: 40px; background: white; border-radius: 8px; box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2); padding: 14px;">
+        <form action="{% url 'index' %}" method="post">
+            <div class="form-group">
+                {% csrf_token %}
+                {{form}}
+                <button type="submit" class="btn btn-primary" style="margin-top: 12px;">Post</button>
+            </div>
+        </form>
+    </div>
+    <hr>
+{% endif %}
+
+<!-- generating all posts -->
+{% for post in page_obj %}
+    <div style="background: white; border-radius: 8px; box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.2); padding: 14px; margin-bottom: 1rem;"</div>
+        <div style="display: flex;">
+            {% if not post.user.profileImg %}
+                <div style="margin-right: 12px; width: 3rem; height: 3rem; border-radius: 50%; background: black;" >
+                </div>
+            {% else %}
+                <img style="border: 1px solid lightgray; object-fit: cover; margin-right: 12px; width: 3rem; height: 3rem; border-radius: 50%; background: white;"  
+                src="{{post.user.profileImg}}" alt="Profile image" >
+            {% endif %}
+            <div>
+                <p style="font-weight: bold; margin-bottom: .2rem">
+                    <a href="{% url 'userProfile' post.user.username %}" class="profile-otherUser" data-page="profile-otherUser">
+                        {{post.user}}
+                    </a>
+                </p>
+                <p style="font-weight: 100; font-size: 0.8rem;">{{post.timestamp}}</p>
+            </div>
+            {% if post.user.username == user.username %}
+                <!-- edit post -->
+                <button type="" data-editbtn="{{post.id}}" id="btn{{post.id}}" class="btn btn-light edit-btn" style="margin-left: auto; height: fit-content; border: 1px solid black;">Edit Post</button>       
+            {% endif %}
+        </div>
+        <div id="div{{post.id}}">
+            <p id="{{post.id}}">{{post.post}}</p>
+        </div>
+        <hr>
+
+        <div style="display: flex; align-items: center;">
+            <!-- like post button-->
+            <button type="" data-likebtn="{{post.id}}" class="btn btn-light like-btn">
+                <!-- if there is not likes-->
+                {% if post.like_set.count == 0 %}
+                    <i class="fa-regular fa-thumbs-up"></i>
+                {% endif %}
+                
+                {% if post.like_set.count > 0 %} 
+                    {% if post.likedByUser == True %}
+                        <i class="fa-solid fa-thumbs-up"></i>
+                    {% else %}
+                        <i class="fa-regular fa-thumbs-up"></i>
+                    {% endif %}
+                {% endif %} 
+            </button> 
+            <p style="margin: 0px; padding-left: 10px;">Liked by <span id="likeCount{{post.id}}">{{post.like_set.count}}</span> users</p>
+        </div>
+    </div>
+{% endfor %}
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+        {% endif %}
+
+        <li class="page-item">
+            <a class="page-link" href="#"> {{page_obj.number}} of {{num_pages}} </a>
+        </li>
+
+        
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+
+{% endblock %}
+
+<script src="{% static 'network/network.js' %}"></script>

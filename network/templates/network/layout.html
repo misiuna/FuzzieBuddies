@@ -1,0 +1,69 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}FuzzieBuddies{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://kit.fontawesome.com/2f058986cf.js" crossorigin="anonymous"></script>
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+    </head>
+    <body style="background: #F0F0F0;">
+        {% if user.is_authenticated %}
+            <nav class="navbar navbar-expand-lg navbar-light" style="background: white; border-bottom: 1px solid gray; padding-bottom: 0px;">
+                <a class="navbar-brand" href="#">FuzzieBuddies</a>
+                <div>
+                    <ul class="navbar-nav mr-auto">
+                        
+                        <li class="nav-item">
+                        <a href="{% url 'index' %}" class="nav-link" >All Posts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'following' user %}" 
+                            {% if "/following/" in request.path %} class="nav-link font-weight-bold" {% endif %} class="nav-link">Following</a>
+                        </li>
+
+                        <div style="display: flex; position: absolute; right: 1rem;">
+                            <li class="nav-item">
+                                <a href="{% url 'userProfile' user %}" data-topnav="profileView" class="nav-link">
+                                    <strong>{{ user.username }}</strong>
+                                </a>
+                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                                </li>
+                        </div>
+                    </ul>
+                </div>
+            </nav>
+        {% else %}
+            <nav class="navbar navbar-expand-lg navbar-light" style="margin-bottom: 20px; background: white; border-bottom: 1px solid gray; padding-bottom: 0px;">
+                <a class="navbar-brand" href="#">FuzzieBuddies</a>
+                <div>
+                    <ul class="navbar-nav mr-auto">
+                        
+                        <li class="nav-item">
+                        <a href="{% url 'index' %}" data-topnav="allPostsView" class="nav-link" >All Posts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        {% endif %}
+              
+        <div class="body" style="max-width: 900px; margin: auto;">
+            {% block body %}
+            {% endblock %}
+            
+            <script src="{% static 'network/network.js' %}"></script>
+            
+        </div>
+    </body>
+</html>
